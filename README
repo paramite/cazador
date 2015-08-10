@@ -1,0 +1,33 @@
+Cazador
+
+Cazador is here to make filling Trello board from several bug trackers quick.
+
+Setup:
+0. install Cazador:
+    sudo ./setup.py install
+1. generate API key on: https://trello.com/app-key
+2. get access token
+    cazador_request_token <API key> <API secret>
+    # verify request token
+    cazador_access_token <API key> <API secret> \
+        <request token> <request token secret> <verification code>
+3. save all to ~/.cazador.conf content:
+    [trello]
+    api_key = <snip>
+    api_secret = <snip>
+    access_token = <>
+    access_secret = <>
+
+    [bz:connector]
+    user = <snip>
+    password = <snip>
+    query = {
+        "product": ["Red Hat OpenStack"],
+        "component": ["openstack-packstack", "openstack-puppet-modules"],
+        "status": ["NEW", "ASSIGNED", "ON_DEV"]
+        }
+
+    [lp:connector]
+    ...
+4. update your Trello board
+    cazador_update_board <board ID>
