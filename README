@@ -15,8 +15,8 @@ Setup:
     [trello]
     api_key = <snip>
     api_secret = <snip>
-    access_token = <>
-    access_secret = <>
+    access_token = <snip>
+    access_secret = <snip>
 
     [bz:connector]
     user = <snip>
@@ -28,6 +28,12 @@ Setup:
         }
 
     [lp:connector]
-    ...
+
+    [lp:connector]
+    query = {
+        "project": ["packstack"],
+        "status": ["New", "Confirmed"]
+        }
+
 4. update your Trello board
     cazador_update_board <board ID>

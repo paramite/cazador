@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from setuptools import setup
 
@@ -13,7 +13,8 @@ setup(
         'click',
         'requests',
         'requests_oauthlib',
-        'python-bugzilla'
+        'python-bugzilla',
+        'launchpadlib'
     ],
     entry_points={
         'console_scripts': [

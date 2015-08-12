@@ -19,20 +19,32 @@
 
 import os
 
-
-LAUNCHPAD_BUGS_URL = os.environ.get(
-    'CAZADOR_LAUNCHPAD_BUGS_URL',
-    'https://bugs.launchpad.net/{}/+bug/{}'
-)
+from launchpadlib.launchpad import Launchpad
+from .base import ConnectorBug
 
 
 class Connector:
     def __init__(self, user=None, password=None):
-        pass
+        # anonymous login is enough here
+        self._conn = Launchpad.login_anonymously('cazador', 'production')
 
-    def __getattr__(self, attr):
-        pass
-
-    def query(self, **kwargs):
+    def query(self, project=None, status=None):
         """Launchpad query result generator."""
-        raise StopIteration()
+        # only project and status is currently supported
+        project = project or []
+        status = status or []
+        if not project:
+            raise TypeError('Parameter "project" is required')
+        for proj in project:
+            for task in self._conn.projects[proj].searchTasks(status=status):
+                yield ConnectorBug(
+                    id='lp#{}'.format(task.bug.id),
+                    summary='{}{}'.format(
+                        task.bug.title[:50],
+                        '...' if len(task.bug.title) > 50 else ''
+                    ),
+                    component=proj,
+                    status=task.status,
+                    priority=task.importance,
+                    url=task.bug.web_link,
+                )

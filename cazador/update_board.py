@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # Copyright (c) 2015 Red Hat Inc.
 #
@@ -19,7 +19,6 @@
 # Use this script to setup token for cazador
 
 import click
-import configparser
 import importlib
 import json
 import requests
@@ -27,6 +26,11 @@ import requests_oauthlib as oauthlib
 import os
 import re
 import sys
+
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 
 CONFIG_PATH = os.environ.get(
@@ -81,10 +85,10 @@ def update_board(board, new_list=None, finished_list=None):
     if not config.read(CONFIG_PATH):
         click.echo('Failed to parse config file {}.'.format(CONFIG_PATH))
         sys.exit(1)
-    if 'trello' not in config:
+    if not config.has_section('trello'):
         click.echo('Config file does not contain section [trello].')
         sys.exit(1)
-    trello_creds = config['trello']
+    trello_creds = dict(config.items('trello'))
     trello_vars = ('api_key', 'api_secret', 'access_token', 'access_secret')
     if len(set(trello_creds.keys()) and set(trello_vars)) != 4:
         click.echo(
@@ -121,7 +125,10 @@ def update_board(board, new_list=None, finished_list=None):
         sys.exit(1)
     # run through all connectors and create new cards from bugs
     for prefix, module in CONNECTORS:
-        module_creds = config['{}:connector'.format(prefix)] or {}
+        try:
+            module_creds = dict(config.items('{}:connector'.format(prefix)))
+        except configparser.NoSectionError:
+            continue
         connector = module.Connector(
             user=module_creds.get('user', None),
             password=module_creds.get('password', None)
