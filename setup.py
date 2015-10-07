@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -8,7 +8,8 @@ setup(
     version='0.1',
     author='Martin Magr',
     author_email='mmagr@redhat.com',
-    py_modules=['cazador'],
+    packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         'click',
         'requests',
