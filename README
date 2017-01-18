@@ -32,7 +32,8 @@ Setup:
     [lp:connector]
     query = {
         "project": ["packstack"],
-        "status": ["New", "Confirmed"]
+        "status": ["New", "Confirmed"],
+        "tags": ["newton-backport-potential"]
         }
 
 4. update your Trello board

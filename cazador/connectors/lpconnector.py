@@ -28,15 +28,16 @@ class Connector:
         # anonymous login is enough here
         self._conn = Launchpad.login_anonymously('cazador', 'production')
 
-    def query(self, project=None, status=None):
+    def query(self, project=None, status=None, tags=None):
         """Launchpad query result generator."""
         # only project and status is currently supported
         project = project or []
         status = status or []
+        tags = tags or []
         if not project:
             raise TypeError('Parameter "project" is required')
         for proj in project:
-            for task in self._conn.projects[proj].searchTasks(status=status):
+            for task in self._conn.projects[proj].searchTasks(status=status, tags=tags):
                 yield ConnectorBug(
                     id='lp#{}'.format(task.bug.id),
                     summary='{}{}'.format(
